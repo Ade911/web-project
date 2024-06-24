@@ -1,0 +1,84 @@
+#!/bin/bash
+# Use this for your user data (script from top to bottom)
+# Install httpd (Amazon Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+
+# Custom HTML content with random motivational message
+cat <<EOL > /var/www/html/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to EC2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        h1, p {
+            color: #fff;
+        }
+        .fun-fact {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .fun-fact:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Congratulations! You've just launched your EC2 instance: $(hostname -f)</h1>
+    <div class="fun-fact" onclick="revealMessage()">Click for a surprise motivational message!</div>
+    <p id="motivationalMessage"></p>
+    <p>Current Server Time: $(date)</p>
+
+    <script>
+        const messages = [
+            "Believe you can and you're halfway there.",
+            "Challenges are what make life interesting; overcoming them is what makes life meaningful.",
+            "Your time is limited, don't waste it living someone else's life.",
+            "The only way to do great work is to love what you do.",
+            "The future belongs to those who believe in the beauty of their dreams.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Success is not the key to happiness. Happiness is the key to success.",
+            "If you're going through hell, keep going.",
+            "Keep pushing forward, because the hard days make you stronger.",
+            "It always seems impossible until it's done."
+        ];
+
+        function revealMessage() {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            document.getElementById('motivationalMessage').textContent = messages[randomIndex];
+        }
+    </script>
+</body>
+</html>
+EOL
